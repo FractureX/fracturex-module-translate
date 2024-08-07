@@ -30,9 +30,9 @@ jobs:
       - name: Get the list of changed files
         id: changes
         run: |
-          new_files=$(git diff --name-status HEAD~1 HEAD | grep '^A' | awk '{print $2}')
-          modified_files=$(git diff --name-status HEAD~1 HEAD | grep '^M' | awk '{print $2}')
-          new_directories=$(git diff --dirstat=files,0 HEAD~1 HEAD | awk '{print $2}' | grep '/$')
+          new_files=$(git diff --name-status HEAD~1 HEAD | grep '^A' | awk '{print $2}' | paste -sd "," -)
+          modified_files=$(git diff --name-status HEAD~1 HEAD | grep '^M' | awk '{print $2}' | paste -sd "," -)
+          new_directories=$(git diff --dirstat=files,0 HEAD~1 HEAD | awk '{print $2}' | grep '/$' | paste -sd "," -)
           echo "new_files=$new_files" >> $GITHUB_ENV
           echo "modified_files=$modified_files" >> $GITHUB_ENV
           echo "new_directories=$new_directories" >> $GITHUB_ENV
@@ -51,11 +51,8 @@ jobs:
 
           if [ "${{ env.new_directories }}" != "" ]; then
             new_major=$((major + 1))
-            new_minor=0
-            new_patch=0
           elif [ "${{ env.new_files }}" != "" ]; then
             new_minor=$((minor + 1))
-            new_patch=0
           elif [ "${{ env.modified_files }}" != "" ]; then
             new_patch=$((patch + 1))
           fi

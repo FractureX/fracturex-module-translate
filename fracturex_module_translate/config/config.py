@@ -8,4 +8,4 @@ class Config(BaseModel):
 config_translate : Config = Config()
 # AAAAAAAAAAaaa
 
-# si tuviera aaaaaaa
+# si tuviera aaaaaaassd
