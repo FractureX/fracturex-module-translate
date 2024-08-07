@@ -100,19 +100,3 @@ jobs:
           new_version=${{ env.new_version }}
           git tag $new_version
           git push https://x-access-token:${PAT}@github.com/${{ github.repository }}.git $new_version
-
-      - name: Generate badge
-        run: |
-          new_version=${{ env.new_version }}
-          curl -o badge.svg "https://img.shields.io/badge/version-${new_version}-blue"
-          echo "Badge created."
-
-      - name: Commit badge
-        uses: EndBug/add-and-commit@v7
-        with:
-          author_name: 'github-actions'
-          author_email: 'actions@github.com'
-          message: 'Update version badge'
-          add: 'badge.svg'
-        env:
-          GITHUB_TOKEN: ${{ secrets.PAT }}  # Utilizar el PAT para hacer commits
