@@ -50,12 +50,14 @@ jobs:
 
           # Check for new directories (considered as new features, thus MINOR update)
           if [ "${{ env.new_directories }}" != "" ]; then
+            echo "${{ env.new_directories }}"
             new_minor=$((minor + 1))
             new_patch=0
           fi
 
           # Check for new files (considered as new features, thus MINOR update)
           if [ "${{ env.new_files }}" != "" ]; then
+            echo "${{ env.new_files }}"
             new_minor=$((minor + 1))
             new_patch=0
           fi
