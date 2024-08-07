@@ -7,3 +7,5 @@ class Config(BaseModel):
 
 config_translate : Config = Config()
 # AAAAAAAAAAaaa
+
+# si tuviera aaaaaaa
