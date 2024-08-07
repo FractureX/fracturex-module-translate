@@ -21,19 +21,24 @@ jobs:
 
       - name: Get the latest tag
         id: get_latest_tag
-        run: echo "::set-output name=tag::$(git describe --tags `git rev-list --tags --max-count=1`)"
+        run: |
+          latest_tag=$(git describe --tags `git rev-list --tags --max-count=1`)
+          echo "tag=$latest_tag" >> $GITHUB_ENV
 
       - name: Get the list of changed files
         id: changes
         run: |
-          echo "::set-output name=new_files::$(git diff --name-status HEAD~1 HEAD | grep '^A' | awk '{print $2}')"
-          echo "::set-output name=modified_files::$(git diff --name-status HEAD~1 HEAD | grep '^M' | awk '{print $2}')"
-          echo "::set-output name=new_directories::$(git diff --dirstat=files,0 HEAD~1 HEAD | awk '{print $2}' | grep '/$')"
+          new_files=$(git diff --name-status HEAD~1 HEAD | grep '^A' | awk '{print $2}')
+          modified_files=$(git diff --name-status HEAD~1 HEAD | grep '^M' | awk '{print $2}')
+          new_directories=$(git diff --dirstat=files,0 HEAD~1 HEAD | awk '{print $2}' | grep '/$')
+          echo "new_files=$new_files" >> $GITHUB_ENV
+          echo "modified_files=$modified_files" >> $GITHUB_ENV
+          echo "new_directories=$new_directories" >> $GITHUB_ENV
 
       - name: Calculate new version
         id: calculate_version
         run: |
-          current_version=${{ steps.get_latest_tag.outputs.tag }}
+          current_version=${{ env.tag }}
           major=$(echo $current_version | cut -d. -f1 | cut -c2-)
           minor=$(echo $current_version | cut -d. -f2)
           patch=$(echo $current_version | cut -d. -f3)
@@ -42,26 +47,29 @@ jobs:
           new_minor=$minor
           new_patch=$patch
 
-          if [ "${{ steps.changes.outputs.new_directories }}" != "" ]; then
+          if [ "${{ env.new_directories }}" != "" ]; then
             new_major=$((major + 1))
-          elif [ "${{ steps.changes.outputs.new_files }}" != "" ]; then
+            new_minor=0
+            new_patch=0
+          elif [ "${{ env.new_files }}" != "" ]; then
             new_minor=$((minor + 1))
-          elif [ "${{ steps.changes.outputs.modified_files }}" != "" ]; then
+            new_patch=0
+          elif [ "${{ env.modified_files }}" != "" ]; then
             new_patch=$((patch + 1))
           fi
 
           new_version="v${new_major}.${new_minor}.${new_patch}"
-          echo "::set-output name=new_version::${new_version}"
+          echo "new_version=$new_version" >> $GITHUB_ENV
 
       - name: Create new tag
         run: |
-          new_version=${{ steps.calculate_version.outputs.new_version }}
+          new_version=${{ env.new_version }}
           git tag $new_version
           git push origin $new_version
 
       - name: Generate badge
         run: |
-          new_version=${{ steps.calculate_version.outputs.new_version }}
+          new_version=${{ env.new_version }}
           curl -o badge.svg "https://img.shields.io/badge/version-${new_version}-blue"
           echo "Badge created."
 
