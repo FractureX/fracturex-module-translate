@@ -2,7 +2,7 @@ from setuptools import setup, find_packages
 
 setup(
     name="fracturex-module-translate",
-    version="1.0.2",
+    version="1.0.4",
     packages=find_packages(),
     install_requires=[
         "pydantic==2.8.2",
