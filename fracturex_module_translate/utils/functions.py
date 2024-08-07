@@ -1,12 +1,11 @@
-from httpx import Timeout
-from googletrans.client import Translator
-
 from fracturex_module_translate.config.config import config_translate
-from fracturex_module_translate.repository.text_repository import translated_texts
+from fracturex_module_translate.repository.text_repository import (
+    Translate_Repository
+)
 from fracturex_module_translate.model.language import Language
-from fracturex_module_translate.model.text_translation import Text_Translation
-#asdas asdfasdfdfasdfas
-__translator = Translator(timeout=Timeout(connect_timeout=10.00))
+
+# Obtener repositorio de las traducciones
+translate_repository: Translate_Repository = Translate_Repository()
 
 def set_language(language: Language) -> None:
     """
@@ -23,17 +22,6 @@ def set_language(language: Language) -> None:
     """
     config_translate.language = language
 
-def __translate(*, from_language: Language = Language.AUTO, text: str, to_language: Language):
-    returnValue: str = ""
-    for translated_text in translated_texts:
-        if translated_text.text == text and translated_text.to_language == to_language:
-            returnValue = translated_text.text_dest
-            break
-    if returnValue == "":
-        returnValue = __translator.translate(text = text, dest = to_language.value, src = from_language.value).text
-        translated_texts.append(Text_Translation(text = text, to_language = to_language, text_dest = returnValue))
-    return returnValue
-
 def translate(text: str) -> str:
     """
     Método para retornar un texto traducido a otro idioma
@@ -47,7 +35,7 @@ def translate(text: str) -> str:
     -------
     None
     """
-    return __translate(text = text, to_language = config_translate.language)
+    return translate_repository.translate(text = text)
 
 def translate_to_language(text: str, to_language: Language) -> str:
     """
@@ -65,7 +53,7 @@ def translate_to_language(text: str, to_language: Language) -> str:
     str
         Texto traducido
     """
-    return __translate(text = text, to_language = to_language)
+    return translate_repository.translate_to_language(text = text, to_language = to_language)
 
 def translate_from_language_to_language(from_language: Language, text: str, to_language: Language) -> str:
     """
@@ -85,4 +73,7 @@ def translate_from_language_to_language(from_language: Language, text: str, to_l
     str
         Texto traducido
     """
-    return __translate(from_language = from_language, text = text, to_language = to_language)
+    return translate_repository.translate_from_language_to_language(from_language = from_language, text = text, to_language = to_language)
+
+def hola() -> None:
+    pass

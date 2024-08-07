@@ -6,7 +6,6 @@ on:
 
 jobs:
   build:
-
     runs-on: ubuntu-latest
 
     steps:
@@ -49,14 +48,40 @@ jobs:
           new_minor=$minor
           new_patch=$patch
 
+          # Check for new directories (considered as new features, thus MINOR update)
           if [ "${{ env.new_directories }}" != "" ]; then
-            new_major=$((major + 1))
+            new_minor=$((minor + 1))
+            new_patch=0
           fi
+
+          # Check for new files (considered as new features, thus MINOR update)
           if [ "${{ env.new_files }}" != "" ]; then
             new_minor=$((minor + 1))
+            new_patch=0
           fi
+
+          # Check for modified files
           if [ "${{ env.modified_files }}" != "" ]; then
-            new_patch=$((patch + 1))
+            is_major_change=false
+            # Loop through each modified file and determine if it contains breaking changes
+            IFS=',' read -r -a files <<< "${{ env.modified_files }}"
+            for file in "${files[@]}"; do
+              if grep -q 'def ' "$file"; then
+                # Simulate checking for breaking changes in function signatures
+                if grep -Eq 'def .+\(.+\):' "$file"; then
+                  is_major_change=true
+                  break
+                fi
+              fi
+            done
+
+            if [ "$is_major_change" = true ]; then
+              new_major=$((major + 1))
+              new_minor=0
+              new_patch=0
+            else
+              new_patch=$((patch + 1))
+            fi
           fi
 
           new_version="v${new_major}.${new_minor}.${new_patch}"

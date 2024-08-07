@@ -6,6 +6,3 @@ class Config(BaseModel):
     language : Language = Language.SPANISH
 
 config_translate : Config = Config()
-# AAAAAAAAAAaaa
-# asdasdasdfsdfasasd
-# si tuviera aaaaaaassdasdfasdasd

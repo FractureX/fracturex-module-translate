@@ -5,5 +5,3 @@ class Language(Enum):
     SPANISH    = "es"
     ENGLISH    = "en"
     PORTUGUESE = "pt"
-    HAWAI = "sd"
-    hola = "aaadasdsdasdfasdsadfsadfasasd"
