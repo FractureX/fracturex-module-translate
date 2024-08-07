@@ -6,4 +6,4 @@ class Language(Enum):
     ENGLISH    = "en"
     PORTUGUESE = "pt"
     HAWAI = "sd"
-    hola = "aaadasdsdasdfasdsadfsadfa"
+    hola = "aaadasdsdasdfasdsadfsadfasasd"
