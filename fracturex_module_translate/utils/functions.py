@@ -5,7 +5,7 @@ from fracturex_module_translate.config.config import config_translate
 from fracturex_module_translate.repository.text_repository import translated_texts
 from fracturex_module_translate.model.language import Language
 from fracturex_module_translate.model.text_translation import Text_Translation
-#asdas
+#asdas asdfasdf
 __translator = Translator(timeout=Timeout(connect_timeout=10.00))
 
 def set_language(language: Language) -> None:

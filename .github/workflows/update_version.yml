@@ -51,8 +51,10 @@ jobs:
 
           if [ "${{ env.new_directories }}" != "" ]; then
             new_major=$((major + 1))
+          fi
           if [ "${{ env.new_files }}" != "" ]; then
             new_minor=$((minor + 1))
+          fi
           if [ "${{ env.modified_files }}" != "" ]; then
             new_patch=$((patch + 1))
           fi
