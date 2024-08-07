@@ -15,10 +15,16 @@ jobs:
         with:
           fetch-depth: 2  # Descargar los últimos 2 commits para poder comparar
 
+      - name: Set up Git
+        run: |
+          git fetch --tags
+          git config --global user.email "shaquille.montero.vergel123@gmail.com"
+          git config --global user.name "GitHub Actions"
+
       - name: Get the latest tag
         id: get_latest_tag
         run: |
-          latest_tag=$(git describe --tags `git rev-list --tags --max-count=1`)
+          latest_tag=$(git describe --tags `git rev-list --tags --max-count=1` 2>/dev/null || echo "v0.0.0")
           echo "tag=$latest_tag" >> $GITHUB_ENV
 
       - name: Get the list of changed files
@@ -45,12 +51,9 @@ jobs:
 
           if [ "${{ env.new_directories }}" != "" ]; then
             new_major=$((major + 1))
-            new_minor=0
-            new_patch=0
-          elif [ "${{ env.new_files }}" != "" ]; then
+          if [ "${{ env.new_files }}" != "" ]; then
             new_minor=$((minor + 1))
-            new_patch=0
-          elif [ "${{ env.modified_files }}" != "" ]; then
+          if [ "${{ env.modified_files }}" != "" ]; then
             new_patch=$((patch + 1))
           fi
 
@@ -79,4 +82,4 @@ jobs:
           message: 'Update version badge'
           add: 'badge.svg'
         env:
-          GITHUB_TOKEN: ${{ secrets.PAT }}
+          GITHUB_TOKEN: ${{ secrets.PAT }}  # Utilizar el PAT para hacer commits
