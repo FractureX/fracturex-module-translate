@@ -12,6 +12,8 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v2
+        with:
+          fetch-depth: 2  # Descargar los últimos 2 commits para poder comparar
 
       - name: Set up Git
         run: |
