@@ -80,7 +80,11 @@ jobs:
               new_minor=0
               new_patch=0
             else
-              new_patch=$((patch + 1))
+              if [ "$new_minor" -ne "$minor" ]; then
+                new_patch=0
+              else
+                new_patch=$((patch + 1))
+              fi
             fi
           fi
 
